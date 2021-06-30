@@ -4,12 +4,19 @@
       <div class="search-box">
         <input type="text"
         name=""
-        id="AIzaSyDIh3u7Ef3Q8wGm0bZbfa39aegxbrKjQv8"
+        id=""
         class="search-bar"
         placeholder="Search..." 
         v-model="query"
         @keypress="fetchWeather"
         />
+        <input type="text" v-model="location">
+    <ul>
+      <li v-for="(result, i) in searchResults" :key="i">
+        {{ result }} // list of all places
+      </li>
+
+    </ul>
 
       </div>
 
@@ -35,13 +42,26 @@ export default {
   name: 'App',
   data () {
     return {
+      location: '',
+      searchResults: [],
+      service: null,
+
       api_key: '3837d029e6997b3a23f83cbb5aacd161',
       url_base: 'https://api.openweathermap.org/data/2.5/',
       query:'',
       weather: {}
     }
   }, 
-  
+  metaInfo () {
+      return {
+        script: [{
+          src: `https://maps.googleapis.com/maps/api/js?key=AIzaSyDIh3u7Ef3Q8wGm0bZbfa39aegxbrKjQv8&libraries=places`,
+          async: true,
+          defer: true,
+          callback: () => this.MapsInit() // will declare it in methods
+        }]
+      }
+    },
   methods: {
     fetchWeather (e) {
       if (e.key == "Enter") {
@@ -63,8 +83,28 @@ export default {
       let month = months[d.getMonth()];
       let year = d.getFullYear();
       return `${day} ${date} ${month} ${year}`;
+    },
+    MapsInit () {
+        this.service = new window.google.maps.places.AutocompleteService()
+      },
+      displaySuggestions (predictions, status) {
+        if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
+          this.searchResults = []
+          return
+        }
+        this.searchResults = predictions.map(prediction => prediction.description) 
+      }
+  },
+  watch: {
+      location (newValue) {
+        if (newValue) {
+          this.service.getPlacePredictions({
+            input: this.location,
+            types: ['(cities)']
+          }, this.displaySuggestions)
+        }
+      }
     }
-  }
 }
 </script>
 

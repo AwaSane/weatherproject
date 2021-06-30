@@ -1,9 +1,13 @@
 import Vue from 'vue'
 import App from './App.vue'
-// import VueGooglePlaces from 'vue-google-places'
+import VueMeta from 'vue-meta'
+ 
+Vue.use(VueMeta, {
+  // optional pluginOptions
+  refreshOnceOnNavigation: true
+})
 
 Vue.config.productionTip = false
-// Vue.use(VueGooglePlaces)
 new Vue({
   render: h => h(App),
 }).$mount('#app')
