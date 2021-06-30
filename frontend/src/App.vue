@@ -6,11 +6,10 @@
         name=""
         id=""
         class="search-bar"
-        placeholder="Search..." 
+        placeholder="Enter the location" 
         v-model="query"
         @keypress="fetchWeather"
         />
-        <input type="text" v-model="location">
     <ul>
       <li v-for="(result, i) in searchResults" :key="i">
         {{ result }} // list of all places
@@ -42,7 +41,6 @@ export default {
   name: 'App',
   data () {
     return {
-      location: '',
       searchResults: [],
       service: null,
 
@@ -52,16 +50,7 @@ export default {
       weather: {}
     }
   }, 
-  metaInfo () {
-      return {
-        script: [{
-          src: `https://maps.googleapis.com/maps/api/js?key=AIzaSyDIh3u7Ef3Q8wGm0bZbfa39aegxbrKjQv8&libraries=places`,
-          async: true,
-          defer: true,
-          callback: () => this.MapsInit() // will declare it in methods
-        }]
-      }
-    },
+ 
   methods: {
     fetchWeather (e) {
       if (e.key == "Enter") {
@@ -84,27 +73,9 @@ export default {
       let year = d.getFullYear();
       return `${day} ${date} ${month} ${year}`;
     },
-    MapsInit () {
-        this.service = new window.google.maps.places.AutocompleteService()
-      },
-      displaySuggestions (predictions, status) {
-        if (status !== window.google.maps.places.PlacesServiceStatus.OK) {
-          this.searchResults = []
-          return
-        }
-        this.searchResults = predictions.map(prediction => prediction.description) 
-      }
+    
   },
-  watch: {
-      location (newValue) {
-        if (newValue) {
-          this.service.getPlacePredictions({
-            input: this.location,
-            types: ['(cities)']
-          }, this.displaySuggestions)
-        }
-      }
-    }
+ 
 }
 </script>
 
@@ -118,13 +89,13 @@ body{
   font-family: Arial, Helvetica, sans-serif;
 }
 #app {
-  background-image: url('./assets/cold.png');
-  background-size: cover;
-  background-position: bottom;
+  background-image: url('./assets/cold.jpg');
+   background-size: cover;
+  background-position: center;
   transition: 0.4s;
 }
 #app.warm {
-  background-image: url('./assets/warm.png');
+  background-image: url('./assets/warm.jpg');
 }
 
 main{
@@ -139,19 +110,20 @@ main{
   color: #313131;
   font-size: 20px;
   appearance: none;
-  border: none;
+  border: 0px transparent solid ;
   outline: none;
   background: none;
   box-shadow: 0px 0px 8px rgba(0,0,0,0.25);
   background-color: rgba(255,255,255,0.5);
-  border-radius: 0px, 16px 0px 16px;
+  border-radius: 10px;
   transition: 0.45;
 }
 
 .search-box, .search-bar:focus {
   box-shadow: 0px 0px 16px rgba(0,0,0,0.25);
   background-color: rgba(255,255,255,0.75);
-  border-radius: 16px, 0px 16px 0px;
+  border: 1px transparent solid;
+  border-radius: 16px;
 }
 
 .weather-wrap{
